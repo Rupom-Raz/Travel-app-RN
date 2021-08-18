@@ -21,7 +21,7 @@ const AppSocialButton = ({ text, style, icon, onPress }) => {
 };
 const styles = StyleSheet.create({
     container: {
-        width: spacing.width,
+        width: spacing.width / 2,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-evenly",

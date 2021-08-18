@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         position: "relative",
         flexDirection: "row",
         justifyContent: "space-between",
-        bottom: spacing.height < 650 ? 340 : 380,
+        bottom: spacing.height < 650 ? 340 : 400,
         paddingTop: spacing.large + 10,
         paddingHorizontal: spacing.small,
     },

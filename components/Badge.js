@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     container: {
         marginVertical: spacing.small,
         backgroundColor: colors.green,
-        width: spacing.width < 350 ? spacing.width / 2 : spacing.width / 3,
+        width: spacing.width < 350 ? spacing.width / 2 : spacing.width / 2.5,
         height: spacing.height / 28,
         alignItems: "center",
         justifyContent: "center",

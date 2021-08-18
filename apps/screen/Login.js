@@ -1,3 +1,4 @@
+import * as firebase from "firebase";
 import React, { useContext, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import * as Animatable from "react-native-animatable";
@@ -10,7 +11,7 @@ import { AuthContext } from "../Navigation/AuthProvider";
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
-    const { login, fbLogin, googleSign } = useContext(AuthContext);
+    const { googleSign, facebookLogin } = useContext(AuthContext);
 
     return (
         <>
@@ -24,7 +25,7 @@ const Login = ({ navigation }) => {
                     style={styles.socialBtn}
                 >
                     <AppSocialButton
-                        onPress={() => fbLogin()}
+                        onPress={() => facebookLogin()}
                         text="Facebook"
                         icon="facebook"
                         style={styles.fbBtn}
@@ -33,7 +34,7 @@ const Login = ({ navigation }) => {
                         onPress={() => googleSign()}
                         text="Google"
                         icon="google"
-                        style={{ backgroundColor: "#4285F4" }}
+                        style={{ backgroundColor: "#db3236" }}
                     />
                 </Animatable.View>
 
@@ -66,7 +67,23 @@ const Login = ({ navigation }) => {
                     style={{ marginTop: spacing.small }}
                 >
                     <AppButton
-                        onPress={() => login(email, password)}
+                        onPress={() => {
+                            try {
+                                if (email && password) {
+                                    firebase.default
+                                        .auth()
+                                        .signInWithEmailAndPassword(
+                                            email,
+                                            password
+                                        )
+                                        .catch((err) => alert(err));
+                                } else {
+                                    alert("Fields can't be empty");
+                                }
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        }}
                         text="Log in"
                         style={{ backgroundColor: colors.blue }}
                     />
@@ -99,6 +116,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.dark,
         flexDirection: "column",
+        justifyContent: "center",
     },
     textContainer: {
         paddingVertical: spacing.section,

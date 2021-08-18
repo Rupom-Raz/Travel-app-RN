@@ -38,9 +38,12 @@ const StartScreen = ({ navigation }) => {
                             />
                         </Animatable.View>
                         <Text style={styles.description2}>
-                            Already have an account?
+                            Already have an account?{"  "}
                             <Text
-                                style={{ color: colors.blue }}
+                                style={{
+                                    color: colors.blue,
+                                    fontWeight: "bold",
+                                }}
                                 onPress={() => navigation.navigate("Login")}
                             >
                                 Log in

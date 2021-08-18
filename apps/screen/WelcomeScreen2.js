@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.dark,
         alignItems: "center",
+        justifyContent: "center",
         paddingBottom: spacing.large,
     },
     textContainer: {

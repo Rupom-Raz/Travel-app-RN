@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import * as firebase from "firebase";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Avatar, Caption, Title } from "react-native-paper";
 import AppButton from "../../components/AppButton";
@@ -7,23 +8,54 @@ import { colors, spacing } from "../../theme";
 import { AuthContext } from "../Navigation/AuthProvider";
 
 const UserProfile = () => {
+    const [logedInUser, setLogedInUser] = useState({
+        username: "",
+        userPhoto: "",
+        email: "",
+    });
     const { user, logOut } = useContext(AuthContext);
+
+    useEffect(() => {
+        firebase.default
+            .database()
+            .ref("google")
+            .child("113206996635231085510")
+            .once("value", (snap) => {
+                const data = snap.val();
+
+                setLogedInUser({
+                    username: data.name,
+                    userPhoto: data.photo,
+                    email: data.email,
+                });
+            });
+    }, []);
+
     return (
         <ScrollView>
             <View style={styles.container}>
                 <View style={styles.avatarSection}>
                     <Avatar.Image
-                        source={require("../../assets/images/avatar.png")}
+                        source={{
+                            uri: logedInUser.userPhoto,
+                            width: 150,
+                            height: 150,
+                        }}
                         size={spacing.mega + 30}
                     />
-                    <Title style={styles.usernName}>Tanya Edwards</Title>
+                    <Title style={styles.usernName}>
+                        {logedInUser.username}
+                    </Title>
                     <Caption style={styles.userLocation}>
                         San Francisco, CA
                     </Caption>
                 </View>
                 <View style={styles.userDetails}>
-                    <ContactField label="Username" value="Tanya69" />
-                    <ContactField label="Email" value={user.email} />
+                    <ContactField
+                        label="Username"
+                        value={logedInUser.username}
+                    />
+                    <ContactField label="Email" value={logedInUser.email} />
                     <ContactField label="Phone" value="+880175000250" />
                     <ContactField label="Date of birth" value="March 27,1990" />
                     <ContactField label="Address" value="Celina, Delaware" />
@@ -52,8 +84,9 @@ export default UserProfile;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: spacing.height,
         backgroundColor: colors.dark,
-        paddingTop: spacing.large + 10,
+        justifyContent: "center",
     },
     avatarSection: {
         alignItems: "center",
