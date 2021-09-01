@@ -5,96 +5,114 @@ import * as Animatable from "react-native-animatable";
 import AppButton from "../../components/AppButton";
 import AppSocialButton from "../../components/AppSocialButton";
 import AppTextInput from "../../components/AppTextInput";
+import Loading from "../../components/Loading";
 import { colors, spacing } from "../../theme";
 
 const Registration = ({ navigation }) => {
     const [name, setName] = useState();
     const [email, setEmail] = useState();
+    const [loading, setIsLoading] = useState(false);
     const [password, setPassword] = useState();
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>Create account</Text>
-            </View>
-            <Animatable.View animation="fadeInDownBig" style={styles.socialBtn}>
-                <AppSocialButton
-                    text="Facebook"
-                    icon="facebook"
-                    style={styles.fbBtn}
-                />
-                <AppSocialButton text="Google" icon="google" />
-            </Animatable.View>
-            <Text style={styles.description}>or sign up with email </Text>
-            <Animatable.View
-                animation="fadeInRightBig"
-                style={{ alignItems: "center" }}
-            >
-                <View style={styles.name}>
-                    <AppTextInput
-                        onChangeText={(val) => setName(val)}
-                        placeholder="Your name"
-                    />
+    if (loading) {
+        return <Loading />;
+    } else {
+        return (
+            <View style={styles.container}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.text}>Create account</Text>
                 </View>
-                <View style={styles.email}>
-                    <AppTextInput
-                        autoCapitalize="none"
-                        onChangeText={(val) => setEmail(val)}
-                        placeholder="Your email"
-                        keyboardType="email-address"
-                    />
-                </View>
-                <View style={styles.password}>
-                    <AppTextInput
-                        secureTextEntry={true}
-                        placeholder="password"
-                        onChangeText={(val) => setPassword(val)}
-                    />
-                </View>
-            </Animatable.View>
-
-            <View>
-                <AppButton
-                    onPress={() => {
-                        if (name && email && password) {
-                            firebase.default
-                                .auth()
-                                .createUserWithEmailAndPassword(email, password)
-                                .then((userCredential) => {
-                                    firebase.default
-                                        .database()
-                                        .ref(`users/${userCredential.user.uid}`)
-                                        .set({
-                                            name: name,
-                                            email: email,
-                                        });
-                                })
-                                .catch((err) => console.log(err));
-                        } else {
-                            alert("Field can't be empty");
-                        }
-                    }}
-                    text="Sign up"
-                    style={{ backgroundColor: colors.blue }}
-                />
-                <Text
-                    style={{
-                        color: colors.white,
-                        textAlign: "center",
-                        paddingBottom: spacing.small,
-                    }}
+                <Animatable.View
+                    animation="fadeInDownBig"
+                    style={styles.socialBtn}
                 >
-                    Already have an account?
+                    <AppSocialButton
+                        text="Facebook"
+                        icon="facebook"
+                        style={styles.fbBtn}
+                    />
+                    <AppSocialButton text="Google" icon="google" />
+                </Animatable.View>
+                <Text style={styles.description}>or sign up with email </Text>
+                <Animatable.View
+                    animation="fadeInRightBig"
+                    style={{ alignItems: "center" }}
+                >
+                    <View style={styles.name}>
+                        <AppTextInput
+                            onChangeText={(val) => setName(val)}
+                            placeholder="Your name"
+                        />
+                    </View>
+                    <View style={styles.email}>
+                        <AppTextInput
+                            autoCapitalize="none"
+                            onChangeText={(val) => setEmail(val)}
+                            placeholder="Your email"
+                            keyboardType="email-address"
+                        />
+                    </View>
+                    <View style={styles.password}>
+                        <AppTextInput
+                            secureTextEntry={true}
+                            placeholder="password"
+                            onChangeText={(val) => setPassword(val)}
+                        />
+                    </View>
+                </Animatable.View>
+
+                <View>
+                    <AppButton
+                        onPress={() => {
+                            if (name && email && password) {
+                                setIsLoading(true);
+                                firebase.default
+                                    .auth()
+                                    .createUserWithEmailAndPassword(
+                                        email,
+                                        password
+                                    )
+                                    .then((userCredential) => {
+                                        setIsLoading(false);
+                                        firebase.default
+                                            .database()
+                                            .ref(
+                                                `users/${userCredential.user.uid}`
+                                            )
+                                            .set({
+                                                name: name,
+                                                email: email,
+                                            });
+                                    })
+                                    .catch((err) => console.log(err));
+                            } else {
+                                setIsLoading(false);
+                                alert("Field can't be empty");
+                            }
+                        }}
+                        text="Sign up"
+                        style={{ backgroundColor: colors.blue }}
+                    />
+
                     <Text
-                        style={{ color: colors.blue }}
-                        onPress={() => navigation.navigate("Login")}
+                        style={{
+                            color: colors.white,
+                            textAlign: "center",
+                            paddingBottom: spacing.small,
+                        }}
                     >
-                        Log in
+                        Already have an account?
+                        <Text
+                            style={{ color: colors.blue }}
+                            onPress={() => navigation.navigate("Login")}
+                        >
+                            Log in
+                        </Text>
                     </Text>
-                </Text>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
 };
 
 const styles = StyleSheet.create({
